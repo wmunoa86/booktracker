@@ -82,6 +82,15 @@ app.get('/', (req, res) => {
   res.json({ message: 'BookTracker API is running. Visit /api-docs for documentation.' });
 });
 
+// Global error handling middleware
+app.use((err, req, res, next) => {
+  if (err instanceof SyntaxError && err.status === 400 && 'body' in err) {
+    return res.status(400).json({ error: 'Invalid JSON payload. Please check your syntax.' });
+  }
+  console.error(err.stack);
+  res.status(500).json({ error: 'Internal Server Error' });
+});
+
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
 module.exports = app;
