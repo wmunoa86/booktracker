@@ -19,6 +19,17 @@ describe('GET /reviews', () => {
 });
 
 describe('GET /reviews/:id', () => {
+  it('should return a review by a valid existing ID', async () => {
+    const allReviews = await request(app).get('/reviews');
+    if (allReviews.body.length > 0) {
+      const reviewId = allReviews.body[0]._id;
+      const res = await request(app).get(`/reviews/${reviewId}`);
+      expect(res.statusCode).toBe(200);
+      expect(res.body).toHaveProperty('_id', reviewId);
+      expect(res.body).toHaveProperty('rating');
+    }
+  });
+
   it('should return 404 for a non-existent id', async () => {
     const fakeId = new mongoose.Types.ObjectId();
     const res = await request(app).get(`/reviews/${fakeId}`);

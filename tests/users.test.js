@@ -19,6 +19,17 @@ describe('GET /users', () => {
 });
 
 describe('GET /users/:id', () => {
+  it('should return a user by a valid existing ID', async () => {
+    const allUsers = await request(app).get('/users');
+    if (allUsers.body.length > 0) {
+      const userId = allUsers.body[0]._id;
+      const res = await request(app).get(`/users/${userId}`);
+      expect(res.statusCode).toBe(200);
+      expect(res.body).toHaveProperty('_id', userId);
+      expect(res.body).toHaveProperty('displayName');
+    }
+  });
+
   it('should return 404 for a non-existent id', async () => {
     const fakeId = new mongoose.Types.ObjectId();
     const res = await request(app).get(`/users/${fakeId}`);

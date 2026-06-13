@@ -25,4 +25,12 @@ function validateReview(req, res, next) {
   next();
 }
 
-module.exports = { validateBook, validateAuthor, validateReview };
+function validateUser(req, res, next) {
+  const { displayName } = req.body;
+  if (!displayName) {
+    return res.status(400).json({ error: 'displayName is required.' });
+  }
+  next();
+}
+
+module.exports = { validateBook, validateAuthor, validateReview, validateUser };

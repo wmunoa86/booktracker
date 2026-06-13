@@ -19,6 +19,17 @@ describe('GET /books', () => {
 });
 
 describe('GET /books/:id', () => {
+  it('should return a book by a valid existing ID', async () => {
+    const allBooks = await request(app).get('/books');
+    if (allBooks.body.length > 0) {
+      const bookId = allBooks.body[0]._id;
+      const res = await request(app).get(`/books/${bookId}`);
+      expect(res.statusCode).toBe(200);
+      expect(res.body).toHaveProperty('_id', bookId);
+      expect(res.body).toHaveProperty('title');
+    }
+  });
+
   it('should return 404 for a non-existent id', async () => {
     const fakeId = new mongoose.Types.ObjectId();
     const res = await request(app).get(`/books/${fakeId}`);

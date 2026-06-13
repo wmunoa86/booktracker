@@ -19,6 +19,17 @@ describe('GET /authors', () => {
 });
 
 describe('GET /authors/:id', () => {
+  it('should return an author by a valid existing ID', async () => {
+    const allAuthors = await request(app).get('/authors');
+    if (allAuthors.body.length > 0) {
+      const authorId = allAuthors.body[0]._id;
+      const res = await request(app).get(`/authors/${authorId}`);
+      expect(res.statusCode).toBe(200);
+      expect(res.body).toHaveProperty('_id', authorId);
+      expect(res.body).toHaveProperty('name');
+    }
+  });
+
   it('should return 404 for a non-existent id', async () => {
     const fakeId = new mongoose.Types.ObjectId();
     const res = await request(app).get(`/authors/${fakeId}`);
